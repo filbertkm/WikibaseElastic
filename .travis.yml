@@ -10,8 +10,8 @@ matrix:
     - env: DBTYPE=sqlite
       php: hhvm
 
-before_script:
-  - bash ./build/travis/before_script.sh
+sudo: false
 
-script:
-  - bash ./build/travis/script.sh
+install: travis_retry composer install
+
+script: phpunit
