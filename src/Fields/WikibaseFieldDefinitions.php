@@ -3,13 +3,19 @@
 namespace Wikibase\Elastic\Fields;
 
 use InvalidArgumentException;
+use Wikibase\Elastic\EntityFieldsMapping;
 
 class WikibaseFieldDefinitions {
 
 	/**
+	 * @var string[] Indexed by entity type
+	 */
+	private $entityTypeSearchFields;
+
+	/**
 	 * @var string[]
 	 */
-	private $fieldNames;
+	private $enabledFields;
 
 	/**
 	 * @var string[]
@@ -17,41 +23,103 @@ class WikibaseFieldDefinitions {
 	private $languageCodes;
 
 	/**
+	 * @param string[] $entityTypeSearchFields
+	 * @param string[] $enabledFields
 	 * @param string[] $languageCodes
 	 */
-	public function __construct( array $fieldNames, array $languageCodes ) {
-		$this->validateFieldNames( $fieldNames );
-
-		$this->fieldNames = $fieldNames;
+	public function __construct(
+		array $entityTypeSearchFields,
+		array $enabledFields,
+		array $languageCodes
+	) {
+		$this->entityTypeSearchFields = $entityTypeSearchFields;
+		$this->enabledFields = $enabledFields;
 		$this->languageCodes = $languageCodes;
 	}
 
 	/**
-	 * @return Field[] Array key is field name.
+	 * @return Field[]
 	 */
-	public function getFields() {
+	public function getFieldsForMapping() {
 		$fields = array();
 
-		foreach ( $this->fieldNames as $fieldName ) {
-			foreach ( $this->languageCodes as $languageCode ) {
-				$field = $this->newFieldFromType( $fieldName, $languageCode );
-				$name = $field->getFieldName();
+		foreach ( $this->entityTypeSearchFields as $entityType => $fieldNames ) {
+			$fields = array_merge( $fields, $this->getEnabledFieldsForEntityType( $entityType ) );
+		}
 
-				$fields[$name] = $field;
+		sort( $fields );
+
+		return $fields;
+	}
+
+	/**
+	 * @param string $entityType
+	 *
+	 * @throws InvalidArgumentException
+	 * @return Field[]
+	 */
+	public function getFieldsForIndexing( $entityType ) {
+		return $this->getEnabledFieldsForEntityType( $entityType );
+	}
+
+	private function getEnabledFieldsForEntityType( $entityType ) {
+		if ( !array_key_exists( $entityType, $this->entityTypeSearchFields ) ) {
+			throw new \InvalidArgumentException( 'Unknown entityType' );
+		}
+
+		$fieldNames = $this->filterEnabledFieldNames( $this->entityTypeSearchFields[$entityType] );
+
+		$fields = array();
+
+		foreach ( $fieldNames as $fieldName ) {
+			$fields = array_merge( $fields, $this->expandMultilingualField( $fieldName ) );
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * @param string $fieldName
+	 *
+	 * @return Field[]
+	 */
+	private function expandMultilingualField( $fieldName ) {
+		$fields = array();
+
+		foreach ( $this->languageCodes as $languageCode ) {
+			$field = $this->newFieldFromType( $fieldName, $languageCode );
+			$name = $field->getFieldName();
+
+
+			$fields[$name] = $field;
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * @param string[] $fieldNames
+	 *
+	 * @return string[]
+	 */
+	private function filterEnabledFieldNames( array $fieldNames ) {
+		$fields = array();
+
+		foreach ( $fieldNames as $fieldName ) {
+			if ( in_array( $fieldName, $this->enabledFields ) ) {
+				$fields[] = $fieldName;
 			}
 		}
 
 		return $fields;
 	}
 
-	private function validateFieldNames( array $fieldNames ) {
-		foreach( $fieldNames as $fieldName ) {
-			if ( ! in_array( $fieldName, array( 'labels', 'descriptions' ) ) ) {
-				throw new InvalidArgumentException( 'Unknown field name: ' . $fieldName );
-			}
-		}
-	}
-
+	/**
+	 * @param string $type
+	 * @param string $languageCode
+	 *
+	 * @return Field
+	 */
 	private function newFieldFromType( $type, $languageCode ) {
 		switch( $type ) {
 			case 'labels':
