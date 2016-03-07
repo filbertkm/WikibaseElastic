@@ -3,7 +3,6 @@
 namespace Wikibase\Elastic\Fields;
 
 use InvalidArgumentException;
-use Wikibase\Elastic\EntityFieldsMapping;
 
 class WikibaseFieldDefinitions {
 
