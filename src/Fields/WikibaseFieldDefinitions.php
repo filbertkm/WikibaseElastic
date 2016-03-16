@@ -46,7 +46,7 @@ class WikibaseFieldDefinitions {
 			$fields = array_merge( $fields, $this->getEnabledFieldsForEntityType( $entityType ) );
 		}
 
-		sort( $fields );
+		ksort( $fields );
 
 		return $fields;
 	}
