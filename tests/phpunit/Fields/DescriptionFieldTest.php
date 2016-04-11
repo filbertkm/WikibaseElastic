@@ -31,7 +31,7 @@ class DescriptionFieldTest extends PHPUnit_Framework_TestCase {
 			'copy_to' => array( 'all' )
 		);
 
-		$this->assertSame( $expected, $descriptionField->getMapping() );
+		$this->assertSame( $expected, $descriptionField->getPropertyDefinition() );
 	}
 
 	/**

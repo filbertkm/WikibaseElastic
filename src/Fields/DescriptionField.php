@@ -26,9 +26,11 @@ class DescriptionField implements Field {
 	}
 
 	/**
+	 * @see Field::getPropertyDefinition
+	 *
 	 * @return array
 	 */
-	public function getMapping() {
+	public function getPropertyDefinition() {
 		return array(
 			'type' => 'string',
 			'copy_to' => array( 'all' )

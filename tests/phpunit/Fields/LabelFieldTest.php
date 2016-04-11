@@ -31,7 +31,7 @@ class LabelFieldTest extends PHPUnit_Framework_TestCase {
 			'copy_to' => array( 'all', 'all_near_match' )
 		);
 
-		$this->assertSame( $expected, $labelField->getMapping() );
+		$this->assertSame( $expected, $labelField->getPropertyDefinition() );
 	}
 
 	/**

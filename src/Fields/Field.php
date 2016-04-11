@@ -18,14 +18,14 @@ use Wikibase\DataModel\Entity\EntityDocument;
 interface Field {
 
 	/**
-	 * @return array The field mapping defines attributes of the field,
-	 *               such as the field type (e.g. "string", "long", "nested")
-	 *               and other attributes like "not_analyzed".
+	 * @return array The property definition for the field, such as the field
+	 *               type (e.g. "string", "long", "nested") and other attributes
+	 *               like "not_analyzed".
 	 *
 	 *               For detailed documentation about mapping of fields, see:
 	 *               https://www.elastic.co/guide/en/elasticsearch/guide/current/mapping-intro.html
 	 */
-	public function getMapping();
+	public function getPropertyDefinition();
 
 	/**
 	 * @param EntityDocument $entity

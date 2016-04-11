@@ -12,11 +12,11 @@ use Wikibase\DataModel\Term\FingerprintProvider;
 class LabelCountField implements Field {
 
 	/**
-	 * @see SearchIndexField::getMapping
+	 * @see Field::getPropertyDefinition
 	 *
 	 * @return array
 	 */
-	public function getMapping() {
+	public function getPropertyDefinition() {
 		return array(
 			'type' => 'integer'
 		);

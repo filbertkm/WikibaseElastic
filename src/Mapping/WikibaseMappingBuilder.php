@@ -16,16 +16,16 @@ class WikibaseMappingBuilder {
 		$this->languageCodes = $languageCodes;
 	}
 
-	public function buildMapping() {
+	public function getProperties() {
 		$fields = $this->getSearchFields();
 
-		$mapping = array();
+		$properties = [];
 
 		foreach ( $fields as $name => $field ) {
-			$mapping[$name] = $field->getMapping();
+			$properties[$name] = $field->getPropertyDefinition();
 		}
 
-		return $mapping;
+		return $properties;
 	}
 
 	private function getSearchFields() {
@@ -34,7 +34,7 @@ class WikibaseMappingBuilder {
 			Property::ENTITY_TYPE => 'Wikibase\Elastic\Fields\PropertySearchFieldDefinitions'
 		];
 
-		$fields = array();
+		$fields = [];
 
 		foreach ( $searchFieldDefinitions as $type => $class ) {
 			$definition = new $class( $this->languageCodes );

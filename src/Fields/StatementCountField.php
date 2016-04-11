@@ -8,9 +8,11 @@ use Wikibase\DataModel\Statement\StatementListHolder;
 class StatementCountField implements Field {
 
 	/**
+	 * @see Field::getPropertyDefinition
+	 *
 	 * @return array
 	 */
-	public function getMapping() {
+	public function getPropertyDefinition() {
 		return array(
 			'type' => 'long'
 		);
