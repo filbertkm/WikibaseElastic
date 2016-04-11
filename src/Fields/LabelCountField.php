@@ -2,6 +2,7 @@
 
 namespace Wikibase\Elastic\Fields;
 
+use Elastica\Document;
 use Wikibase\DataModel\Entity\EntityDocument;
 use Wikibase\DataModel\Term\FingerprintProvider;
 
@@ -20,6 +21,10 @@ class LabelCountField implements Field {
 		return array(
 			'type' => 'integer'
 		);
+	}
+
+	public function doIndex( EntityDocument $entity, Document $doc ) {
+
 	}
 
 	/**

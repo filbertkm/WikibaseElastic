@@ -27,13 +27,4 @@ interface Field {
 	 */
 	public function getPropertyDefinition();
 
-	/**
-	 * @param EntityDocument $entity
-	 *
-	 * @return mixed Get the value of the field to be indexed when a page/document
-	 *               is indexed. This might be an array with nested data, if the field
-	 *               is defined with nested type or an int or string for simple field types.
-	 */
-	public function getFieldData( EntityDocument $entity );
-
 }

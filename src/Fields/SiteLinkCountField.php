@@ -2,6 +2,7 @@
 
 namespace Wikibase\Elastic\Fields;
 
+use Elastica\Document;
 use Wikibase\DataModel\Entity\EntityDocument;
 use Wikibase\DataModel\Entity\Item;
 
@@ -16,6 +17,10 @@ class SiteLinkCountField implements Field {
 		return array(
 			'type' => 'long'
 		);
+	}
+
+	public function doIndex( EntityDocument $entity, Document $doc ) {
+
 	}
 
 	/**

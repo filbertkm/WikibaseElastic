@@ -47,9 +47,9 @@ class ItemSearchFieldDefinitions {
 			case 'statement_count':
 				return new StatementCountField();
 			case 'label':
-				return new LabelField( $languageCode );
+				return new TermListField( $this->languageCodes, array( 'all', 'all_near_match' ), 'label' );
 			case 'description':
-				return new DescriptionField( $languageCode );
+				return new TermListField( $this->languageCodes, array( 'all' ), 'description' );
 			default:
 				throw new UnexpectedValueException( $fieldName . ' is unknown' );
 		}

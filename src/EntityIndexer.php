@@ -4,43 +4,58 @@ namespace Wikibase\Elastic;
 
 use Elastica\Document;
 use Wikibase\DataModel\Entity\EntityDocument;
-use Wikibase\DataModel\Term\FingerprintHolder;
+use Wikibase\DataModel\Entity\Item;
+use Wikibase\DataModel\Entity\Property;
 
 class EntityIndexer {
-
-	/**
-	 * @var array
-	 */
-	private $fields;
-
-	/**
-	 * @param array $fields
-	 */
-	public function __construct( array $fields ) {
-		$this->fields = $fields;
-	}
 
 	/**
 	 * @param EntityDocument $entity
 	 * @oaram Document $document
 	 */
 	public function doIndex( EntityDocument $entity, Document $document ) {
-		$availableFields = $this->getAvailableFields( $entity );
+		$searchFields = $this->getSearchFieldDefinitionForEntityType( $entity->getType() );
 
-		foreach ( $this->fields as $fieldName => $field ) {
-			if ( $field->hasFieldData( $entity ) ) {
-				$data = $field->getFieldData( $entity );
-				$document->set( $fieldName, $data );
+		foreach ( $searchFields as $fieldName => $field ) {
+			if ( $fieldName === 'label' ) {
+				$field->doIndex( $entity->getFingerprint()->getLabels(), $document );
+			} else if ( $fieldName === 'description' ) {
+				$field->doIndex( $entity->getFingerprint()->getDescriptions(), $document );
+			} else {
+				$field->doIndex( $entity );
 			}
 		}
 	}
 
-	private function getAvailableFields( EntityDocument $entity ) {
-		if ( $entity instanceof FingerprintHolder ) {
-			return array( 'labels', 'descriptions' );
+	private function getSearchFields() {
+		$searchFieldDefinitions = $this->getSearchFieldDefinitions();
+		$fields = [];
+
+		foreach ( $searchFieldDefinitions as $type => $class ) {
+			$definition = new $class( $this->languageCodes );
+			$fields = array_unique( array_merge( $fields, $definition->getSearchFields() ) );
 		}
 
-		return array();
+		ksort( $searchFields );
+
+		return $searchFields;
+	}
+
+	private function getSearchFieldDefinitions() {
+		return [
+			Item::ENTITY_TYPE => 'Wikibase\Elastic\Fields\ItemSearchFieldDefinitions',
+			Property::ENTITY_TYPE => 'Wikibase\Elastic\Fields\PropertySearchFieldDefinitions'
+		];
+	}
+
+	private function getSearchFieldDefinitionForEntityType( $entityType ) {
+		$searchFieldDefinitions = $this->getSearchFieldDefinitions();
+
+		if ( isset( $searchFieldDefinitions[$entityType] ) ) {
+			throw new \UnexpectedValueException( $entityType . ' is unknown' );
+		}
+
+		return $searchFieldDefinitions[$entityType];
 	}
 
 }

@@ -83,17 +83,9 @@ class WikibaseFieldDefinitions {
 	 * @return Field[]
 	 */
 	private function expandMultilingualField( $fieldName ) {
-		$fields = array();
+		$field = $this->newFieldFromType( $fieldName );
 
-		foreach ( $this->languageCodes as $languageCode ) {
-			$field = $this->newFieldFromType( $fieldName, $languageCode );
-			$name = $field->getFieldName();
-
-
-			$fields[$name] = $field;
-		}
-
-		return $fields;
+		return $field->getProperties();
 	}
 
 	/**
@@ -119,12 +111,26 @@ class WikibaseFieldDefinitions {
 	 *
 	 * @return Field
 	 */
-	private function newFieldFromType( $type, $languageCode ) {
+	private function newFieldFromType( $type ) {
 		switch( $type ) {
-			case 'labels':
-				return new LabelField( $languageCode );
+			case 'label':
+				return new TermListField(
+					$this->languageCodes,
+					array( 'all', 'all_near_match' ),
+					'label'
+				);
 			case 'descriptions':
-				return new DescriptionField( $languageCode );
+				return new TermListField(
+					$this->languageCodes,
+					array( 'all' ),
+					'description'
+				);
+			case 'label_count':
+				return new LabelCountField();
+			case 'sitelink_count':
+				return new SiteLinkCountField();
+			case 'statement_count':
+				return new StatementCountField();
 			default:
 				throw new InvalidArgumentException( 'Unknown field type: ' . $type );
 		}
