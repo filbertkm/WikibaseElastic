@@ -27,11 +27,7 @@ class PropertySearchFieldDefinitions {
 		return $fields;
 	}
 
-	private function isMultilingualField( $fieldName ) {
-		return in_array( $fieldName, array( 'label', 'description' ) );
-	}
-
-	private function getField( $fieldName, $languageCode = null ) {
+	private function getField( $fieldName ) {
 		switch( $fieldName ) {
 			case 'label_count':
 				return new LabelCountField();
@@ -42,7 +38,7 @@ class PropertySearchFieldDefinitions {
 			case 'description':
 				return new TermListField( $this->languageCodes, array( 'all' ), 'description' );
 			default:
-				throw new UnexpectedValueException( $fieldName . ' is unknown' );
+				throw new \UnexpectedValueException( $fieldName . ' is unknown' );
 		}
 	}
 
