@@ -21,14 +21,7 @@ class PropertySearchFieldDefinitions {
 		$fields = [];
 
 		foreach ( $fieldNames as $fieldName ) {
-			if ( $this->isMultilingualField( $fieldName ) ) {
-				foreach( $this->languageCodes as $languageCode ) {
-					$key = $fieldName . '_' . $languageCode;
-					$fields[$key] = $this->getField( $fieldName, $languageCode );
-				}
-			} else {
-				$fields[$fieldName] = $this->getField( $fieldName );
-			}
+			$fields[$fieldName] = $this->getField( $fieldName );
 		}
 
 		return $fields;

@@ -3,6 +3,7 @@
 namespace Wikibase\Elastic;
 
 use Elastica\Document;
+use Elastica\Type;
 use Wikibase\DataModel\Entity\EntityDocument;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\Property;
@@ -10,11 +11,31 @@ use Wikibase\DataModel\Entity\Property;
 class EntityIndexer {
 
 	/**
+	 * @var Type
+	 */
+	private $type;
+
+	/**
+	 * @var string[]
+	 */
+	private $languageCodes;
+
+	/**
+	 * @param Type $type
+	 * @param string[] $languageCodes
+	 */
+	public function __construct( Type $type, array $languageCodes ) {
+		$this->type = $type;
+		$this->languageCodes = $languageCodes;
+	}
+
+	/**
 	 * @param EntityDocument $entity
 	 * @oaram Document $document
 	 */
 	public function doIndex( EntityDocument $entity, Document $document ) {
-		$searchFields = $this->getSearchFieldDefinitionForEntityType( $entity->getType() );
+		$searchFieldDefinitions = $this->getSearchFieldDefinitionsForEntityType( $entity->getType() );
+		$searchFields = $searchFieldDefinitions->getSearchFields();
 
 		foreach ( $searchFields as $fieldName => $field ) {
 			if ( $fieldName === 'label' ) {
@@ -22,9 +43,12 @@ class EntityIndexer {
 			} else if ( $fieldName === 'description' ) {
 				$field->doIndex( $entity->getFingerprint()->getDescriptions(), $document );
 			} else {
-				$field->doIndex( $entity );
+				$field->doIndex( $entity, $document );
 			}
 		}
+
+		// @todo upsert
+		$this->type->addDocument( $document );
 	}
 
 	private function getSearchFields() {
@@ -48,14 +72,14 @@ class EntityIndexer {
 		];
 	}
 
-	private function getSearchFieldDefinitionForEntityType( $entityType ) {
+	private function getSearchFieldDefinitionsForEntityType( $entityType ) {
 		$searchFieldDefinitions = $this->getSearchFieldDefinitions();
 
-		if ( isset( $searchFieldDefinitions[$entityType] ) ) {
+		if ( !isset( $searchFieldDefinitions[$entityType] ) ) {
 			throw new \UnexpectedValueException( $entityType . ' is unknown' );
 		}
 
-		return $searchFieldDefinitions[$entityType];
+		return new $searchFieldDefinitions[$entityType]( $this->languageCodes );
 	}
 
 }
