@@ -24,17 +24,15 @@ class LabelCountField implements Field {
 	}
 
 	public function doIndex( EntityDocument $entity, Document $doc ) {
-
+		$doc->set( 'label_count', $this->getCount( $entity ) );
 	}
 
 	/**
-	 * @see SearchIndexField::getFieldData
-	 *
 	 * @param EntityDocument $entity
 	 *
 	 * @return int
 	 */
-	public function getFieldData( EntityDocument $entity ) {
+	private function getCount( EntityDocument $entity ) {
 		if ( $entity instanceof FingerprintProvider ) {
 			return $entity->getFingerprint()->getLabels()->count();
 		}

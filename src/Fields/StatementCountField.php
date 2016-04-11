@@ -20,15 +20,15 @@ class StatementCountField implements Field {
 	}
 
 	public function doIndex( EntityDocument $entity, Document $doc ) {
-
+		$doc->set( 'statement_count', $this->getCount( $entity ) );
 	}
 
 	/**
 	 * @param EntityDocument $entity
 	 *
-	 * @return mixed
+	 * @return int
 	 */
-	public function getFieldData( EntityDocument $entity ) {
+	private function getCount( EntityDocument $entity ) {
 		if ( $entity instanceof StatementListHolder ) {
 			return $entity->getStatements()->count();
 		}

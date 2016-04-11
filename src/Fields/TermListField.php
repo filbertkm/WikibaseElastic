@@ -56,20 +56,20 @@ class TermListField implements Field {
 	/**
 	 * @return string
 	 */
-    private function getFieldPrefix() {
-        return $this->fieldPrefix . '_';
-    }
+	private function getFieldPrefix() {
+		return $this->fieldPrefix . '_';
+	}
 
-    /**
-     * @see Field::getPropertyDefinition
-     *
-     * @return array
-     */
-    public function getPropertyDefinition() {
-        return array(
-            'type' => 'string',
-            'copy_to' => array( 'all' )
-        );
-    }
+	/**
+	 * @see Field::getPropertyDefinition
+	 *
+	 * @return array
+	 */
+	public function getPropertyDefinition() {
+		return array(
+			'type' => 'string',
+			'copy_to' => array( 'all' )
+		);
+	}
 
 }

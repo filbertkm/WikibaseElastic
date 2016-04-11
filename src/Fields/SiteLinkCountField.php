@@ -20,15 +20,15 @@ class SiteLinkCountField implements Field {
 	}
 
 	public function doIndex( EntityDocument $entity, Document $doc ) {
-
+		$doc->set( 'sitelink_count', $this->getCount( $entity ) );
 	}
 
 	/**
 	 * @param EntityDocument $entity
 	 *
-	 * @return mixed
+	 * @return int
 	 */
-	public function getFieldData( EntityDocument $entity ) {
+	private function getCount( EntityDocument $entity ) {
 		if ( $entity instanceof Item ) {
 			return $entity->getSiteLinkList()->count();
 		}
