@@ -2,6 +2,8 @@
 
 namespace Wikibase\Elastic\Mapping;
 
+use Elastica\Type;
+use Elastica\Type\Mapping;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\Property;
 
@@ -16,7 +18,16 @@ class WikibaseMappingBuilder {
 		$this->languageCodes = $languageCodes;
 	}
 
-	public function getProperties() {
+	/**
+	 * @param Type $type
+	 *
+	 * @return Mapping
+	 */
+	public function build( Type $type ) {
+		return new Mapping( $type, $this->getProperties() );
+	}
+
+	private function getProperties() {
 		$fields = $this->getSearchFields();
 
 		$properties = [];
