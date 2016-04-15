@@ -2,8 +2,6 @@
 
 namespace Wikibase\Elastic\Fields;
 
-use Wikibase\DataModel\Entity\EntityDocument;
-
 /**
  * Each field is intended to be by CirrusSearch as an
  * additional property of a page.
@@ -20,7 +18,7 @@ interface Field {
 	/**
 	 * @return array The property definition for the field, such as the field
 	 *               type (e.g. "string", "long", "nested") and other attributes
-	 *               like "not_analyzed".
+	 *               like "not_analyzed", with property names as keys.
 	 *
 	 *               For detailed documentation about mapping of fields, see:
 	 *               https://www.elastic.co/guide/en/elasticsearch/guide/current/mapping-intro.html

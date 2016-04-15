@@ -2,6 +2,7 @@
 
 namespace Wikibase\Elastic\Tests\Fields;
 
+use Elastica\Document;
 use PHPUnit_Framework_TestCase;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\Property;
@@ -24,7 +25,7 @@ class LabelFieldTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testGetMapping() {
-		$labelField = new LabelField( 'ja' );
+		$labelField = new LabelField( 'ja', array( 'all', 'all_near_match' ) );
 
 		$expected = array(
 			'type' => 'string',
@@ -35,40 +36,28 @@ class LabelFieldTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @dataProvider hasFieldDataProvider
+	 * @dataProvider doIndexProvider
 	 */
-	public function testHasFieldData( $expected, $languageCode, $entity ) {
-		$labelField = new LabelField( $languageCode );
+	public function testDoIndex( $expected, $languageCode, $entity ) {
+		$document = new Document();
 
-		$this->assertSame( $expected, $labelField->hasFieldData( $entity ) );
+		$labelField = new LabelField( $languageCode );
+		$labelField->doIndex( $entity, $document );
+
+		$this->assertSame( $expected, $document->getData() );
 	}
 
-	public function hasFieldDataProvider() {
+	public function doIndexProvider() {
 		$item = new Item();
 		$item->setLabel( 'en', 'kitten' );
 
 		$emptyProperty = Property::newFromType( 'string' );
 
 		return array(
-			array( true, 'en', $item ),
-			array( false, 'es', $item ),
-			array( false, 'en', $emptyProperty ),
+			array( array( 'label_en' => 'kitten' ), 'en', $item ),
+			array( array(), 'es', $item ),
+			array( array(), 'en', $emptyProperty ),
 		);
-	}
-
-	public function testGetFieldData() {
-		$item = new Item();
-		$item->setLabel( 'en', 'kitten' );
-
-		$labelField = new LabelField( 'en' );
-		$this->assertSame( 'kitten', $labelField->getFieldData( $item ) );
-	}
-
-	public function testGetFieldData_labelNotFound() {
-		$labelField = new LabelField( 'es' );
-
-		$this->setExpectedException( 'OutOfBoundsException' );
-		$labelField->getFieldData( new Item() );
 	}
 
 }

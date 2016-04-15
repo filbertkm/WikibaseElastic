@@ -17,31 +17,21 @@ class ItemSearchFieldDefinitions {
 	}
 
 	public function getSearchFields() {
-		$fieldNames = [ 'label_count', 'sitelink_count', 'statement_count', 'label', 'description' ];
-		$fields = [];
+		$fields = [
+			'label_count' => new LabelCountField(),
+			'sitelink_count' => new SiteLinkCountField(),
+			'statement_count' => new StatementCountField()
+		];
 
-		foreach ( $fieldNames as $fieldName ) {
-			$fields[$fieldName] = $this->getField( $fieldName );
+		foreach ( $this->languageCodes as $languageCode ) {
+			$field = new LabelField( $languageCode, array( 'all' ) );
+			$fields[$field->getFieldName()] = $field;
+
+			$field = new DescriptionField( $languageCode, array( 'all' ) );
+			$fields[$field->getFieldName()] = $field;
 		}
 
 		return $fields;
-	}
-
-	private function getField( $fieldName ) {
-		switch( $fieldName ) {
-			case 'label_count':
-				return new LabelCountField();
-			case 'sitelink_count':
-				return new SiteLinkCountField();
-			case 'statement_count':
-				return new StatementCountField();
-			case 'label':
-				return new TermListField( $this->languageCodes, array( 'all', 'all_near_match' ), 'label' );
-			case 'description':
-				return new TermListField( $this->languageCodes, array( 'all' ), 'description' );
-			default:
-				throw new \UnexpectedValueException( $fieldName . ' is unknown' );
-		}
 	}
 
 }

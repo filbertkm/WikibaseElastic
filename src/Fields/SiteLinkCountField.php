@@ -14,11 +14,15 @@ class SiteLinkCountField implements Field {
 	 * @return array
 	 */
 	public function getPropertyDefinition() {
-		return array(
+		return [
 			'type' => 'long'
-		);
+		];
 	}
 
+	/**
+	 * @param EntityDocument $entity
+	 * @param Document $doc
+	 */
 	public function doIndex( EntityDocument $entity, Document $doc ) {
 		$doc->set( 'sitelink_count', $this->getCount( $entity ) );
 	}

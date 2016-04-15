@@ -2,6 +2,7 @@
 
 namespace Wikibase\Elastic\Tests\Fields;
 
+use Elastica\Document;
 use PHPUnit_Framework_TestCase;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\Property;
@@ -24,7 +25,7 @@ class DescriptionFieldTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testGetMapping() {
-		$descriptionField = new DescriptionField( 'ja' );
+		$descriptionField = new DescriptionField( 'ja', array( 'all' ) );
 
 		$expected = array(
 			'type' => 'string',
@@ -35,40 +36,28 @@ class DescriptionFieldTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @dataProvider hasFieldDataProvider
+	 * @dataProvider doIndexProvider
 	 */
-	public function testHasFieldData( $expected, $languageCode, $entity ) {
-		$descriptionField = new DescriptionField( $languageCode );
+	public function testDoIndex( $expected, $languageCode, $entity ) {
+		$document = new Document();
 
-		$this->assertSame( $expected, $descriptionField->hasFieldData( $entity ) );
+		$descriptionField = new DescriptionField( $languageCode );
+		$descriptionField->doIndex( $entity, $document );
+
+		$this->assertSame( $expected, $document->getData() );
 	}
 
-	public function hasFieldDataProvider() {
+	public function doIndexProvider() {
 		$item = new Item();
 		$item->setDescription( 'en', 'young cat' );
 
 		$emptyProperty = Property::newFromType( 'string' );
 
 		return array(
-			array( true, 'en', $item ),
-			array( false, 'es', $item ),
-			array( false, 'en', $emptyProperty ),
+			array( array( 'description_en' => 'young cat' ), 'en', $item ),
+			array( array(), 'es', $item ),
+			array( array(), 'en', $emptyProperty ),
 		);
-	}
-
-	public function testGetFieldData() {
-		$item = new Item();
-		$item->setDescription( 'en', 'young cat' );
-
-		$descriptionField = new DescriptionField( 'en' );
-		$this->assertSame( 'young cat', $descriptionField->getFieldData( $item ) );
-	}
-
-	public function testGetFieldData_descriptionNotFound() {
-		$descriptionField = new DescriptionField( 'es' );
-
-		$this->setExpectedException( 'OutOfBoundsException' );
-		$descriptionField->getFieldData( new Item() );
 	}
 
 }

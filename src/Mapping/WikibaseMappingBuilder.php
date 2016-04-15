@@ -20,17 +20,28 @@ class WikibaseMappingBuilder {
 
 	/**
 	 * @param Type $type
+	 * @param Field[] $allFields key (name of field) => value
 	 *
 	 * @return Mapping
 	 */
-	public function build( Type $type ) {
-		return new Mapping( $type, $this->getProperties() );
+	public function build( Type $type, array $allFields = [] ) {
+		$mapping = new Mapping( $type, $this->getProperties( $allFields ) );
+
+		$mapping->setAllField( [
+			'enabled' => false
+		] );
+
+		return $mapping;
 	}
 
-	private function getProperties() {
-		$fields = $this->getSearchFields();
-
+	private function getProperties( array $allFields ) {
 		$properties = [];
+
+		foreach ( $allFields as $name => $field ) {
+			$properties[$name] = $field->getPropertyDefinition();
+		}
+
+		$fields = $this->getSearchFields();
 
 		foreach ( $fields as $name => $field ) {
 			$properties[$name] = $field->getPropertyDefinition();
@@ -44,8 +55,6 @@ class WikibaseMappingBuilder {
 			Item::ENTITY_TYPE => 'Wikibase\Elastic\Fields\ItemSearchFieldDefinitions',
 			Property::ENTITY_TYPE => 'Wikibase\Elastic\Fields\PropertySearchFieldDefinitions'
 		];
-
-		$fields = [];
 
 		foreach ( $searchFieldDefinitions as $type => $class ) {
 			$definition = new $class( $this->languageCodes );
