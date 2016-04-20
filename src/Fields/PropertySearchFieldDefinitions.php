@@ -2,7 +2,7 @@
 
 namespace Wikibase\Elastic\Fields;
 
-class PropertySearchFieldDefinitions {
+class PropertySearchFieldDefinitions implements FieldDefinitions {
 
 	/**
 	 * @var string[]
@@ -16,7 +16,7 @@ class PropertySearchFieldDefinitions {
 		$this->languageCodes = $languageCodes;
 	}
 
-	public function getSearchFields() {
+	public function getFields() {
 		$fields = [
 			'label_count' => new LabelCountField(),
 			'statement_count' => new StatementCountField()

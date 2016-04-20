@@ -2,7 +2,7 @@
 
 namespace Wikibase\Elastic\Fields;
 
-class ItemSearchFieldDefinitions {
+class ItemSearchFieldDefinitions implements FieldDefinitions {
 
 	/**
 	 * @var string[]
@@ -16,7 +16,10 @@ class ItemSearchFieldDefinitions {
 		$this->languageCodes = $languageCodes;
 	}
 
-	public function getSearchFields() {
+	/**
+	 * @return Field[]
+	 */
+	public function getFields() {
 		$fields = [
 			'label_count' => new LabelCountField(),
 			'sitelink_count' => new SiteLinkCountField(),
