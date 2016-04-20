@@ -23,7 +23,7 @@ class PropertySearchFieldDefinitions {
 		];
 
 		foreach ( $this->languageCodes as $languageCode ) {
-			$field = new LabelField( $languageCode, array( 'all' ) );
+			$field = new LabelField( $languageCode, array( 'all', 'all_near_match' ) );
 			$fields[$field->getFieldName()] = $field;
 
 			$field = new DescriptionField( $languageCode, array( 'all' ) );
