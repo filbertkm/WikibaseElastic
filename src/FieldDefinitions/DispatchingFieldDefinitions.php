@@ -1,6 +1,8 @@
 <?php
 
-namespace Wikibase\Elastic\Fields;
+namespace Wikibase\Elastic\FieldDefinitions;
+
+use Wikibase\Elastic\Fields\Field;
 
 class DispatchingFieldDefinitions implements FieldDefinitions {
 

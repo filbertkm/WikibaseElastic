@@ -4,7 +4,7 @@ namespace Wikibase\Elastic;
 
 use Elastica\Document;
 use Wikibase\DataModel\Entity\EntityDocument;
-use Wikibase\Elastic\Fields\FieldDefinitions;
+use Wikibase\Elastic\FieldDefinitions\FieldDefinitions;
 
 class EntityFieldsIndexer {
 

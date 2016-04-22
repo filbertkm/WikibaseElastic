@@ -2,6 +2,12 @@
 
 namespace Wikibase\Elastic\Fields;
 
+use Wikibase\Elastic\Fields\DescriptionField;
+use Wikibase\Elastic\Fields\Field;
+use Wikibase\Elastic\Fields\LabelCountField;
+use Wikibase\Elastic\Fields\LabelField;
+use Wikibase\Elastic\Fields\StatementCountField;
+
 class PropertySearchFieldDefinitions implements FieldDefinitions {
 
 	/**
@@ -16,6 +22,9 @@ class PropertySearchFieldDefinitions implements FieldDefinitions {
 		$this->languageCodes = $languageCodes;
 	}
 
+	/**
+	 * @return Field[]
+	 */
 	public function getFields() {
 		$fields = [
 			'label_count' => new LabelCountField(),

@@ -4,7 +4,7 @@ namespace Wikibase\Elastic\Mapping;
 
 use Elastica\Type;
 use Elastica\Type\Mapping;
-use Wikibase\Elastic\Fields\FieldDefinitions;
+use Wikibase\Elastic\FieldDefinitions\FieldDefinitions;
 
 class WikibaseMappingBuilder {
 
