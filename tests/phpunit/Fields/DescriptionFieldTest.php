@@ -18,13 +18,7 @@ use Wikibase\Elastic\Fields\DescriptionField;
  */
 class DescriptionFieldTest extends PHPUnit_Framework_TestCase {
 
-	public function testGetFieldName() {
-		$descriptionField = new DescriptionField( 'es' );
-
-		$this->assertSame( 'description_es', $descriptionField->getFieldName() );
-	}
-
-	public function testGetMapping() {
+	public function testGetPropertyDefinition() {
 		$descriptionField = new DescriptionField( 'ja', array( 'all' ) );
 
 		$expected = array(

@@ -2,7 +2,13 @@
 
 namespace Wikibase\Elastic\Fields;
 
-class PropertySearchFieldDefinitions {
+use Wikibase\Elastic\Fields\DescriptionField;
+use Wikibase\Elastic\Fields\Field;
+use Wikibase\Elastic\Fields\LabelCountField;
+use Wikibase\Elastic\Fields\LabelField;
+use Wikibase\Elastic\Fields\StatementCountField;
+
+class PropertySearchFieldDefinitions implements FieldDefinitions {
 
 	/**
 	 * @var string[]
@@ -16,14 +22,17 @@ class PropertySearchFieldDefinitions {
 		$this->languageCodes = $languageCodes;
 	}
 
-	public function getSearchFields() {
+	/**
+	 * @return Field[]
+	 */
+	public function getFields() {
 		$fields = [
 			'label_count' => new LabelCountField(),
 			'statement_count' => new StatementCountField()
 		];
 
 		foreach ( $this->languageCodes as $languageCode ) {
-			$field = new LabelField( $languageCode, array( 'all' ) );
+			$field = new LabelField( $languageCode, array( 'all', 'all_near_match' ) );
 			$fields[$field->getFieldName()] = $field;
 
 			$field = new DescriptionField( $languageCode, array( 'all' ) );

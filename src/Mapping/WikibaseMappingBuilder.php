@@ -4,18 +4,14 @@ namespace Wikibase\Elastic\Mapping;
 
 use Elastica\Type;
 use Elastica\Type\Mapping;
-use Wikibase\DataModel\Entity\Item;
-use Wikibase\DataModel\Entity\Property;
+use Wikibase\Elastic\FieldDefinitions\FieldDefinitions;
 
 class WikibaseMappingBuilder {
 
-	/**
-	 * @var string[]
-	 */
-	private $languageCodes;
+	private $fieldDefinitions;
 
-	public function __construct( array $languageCodes ) {
-		$this->languageCodes = $languageCodes;
+	public function __construct( FieldDefinitions $fieldDefinitions ) {
+		$this->fieldDefinitions = $fieldDefinitions;
 	}
 
 	/**
@@ -34,38 +30,21 @@ class WikibaseMappingBuilder {
 		return $mapping;
 	}
 
-	private function getProperties( array $allFields ) {
+	public function getProperties( array $allFields = [] ) {
 		$properties = [];
 
 		foreach ( $allFields as $name => $field ) {
 			$properties[$name] = $field->getPropertyDefinition();
 		}
 
-		$fields = $this->getSearchFields();
+
+		$fields = $this->fieldDefinitions->getFields();
 
 		foreach ( $fields as $name => $field ) {
 			$properties[$name] = $field->getPropertyDefinition();
 		}
 
 		return $properties;
-	}
-
-	private function getSearchFields() {
-		$searchFieldDefinitions = [
-			Item::ENTITY_TYPE => 'Wikibase\Elastic\Fields\ItemSearchFieldDefinitions',
-			Property::ENTITY_TYPE => 'Wikibase\Elastic\Fields\PropertySearchFieldDefinitions'
-		];
-
-		foreach ( $searchFieldDefinitions as $type => $class ) {
-			$definition = new $class( $this->languageCodes );
-			$searchFields = $definition->getSearchFields();
-
-			foreach ( $searchFields as $key => $searchField ) {
-				$fields[$key] = $searchField;
-			}
-		}
-
-		return $fields;
 	}
 
 }

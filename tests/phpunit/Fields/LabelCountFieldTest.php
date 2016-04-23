@@ -6,36 +6,31 @@ use Elastica\Document;
 use PHPUnit_Framework_TestCase;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\Property;
-use Wikibase\Elastic\Fields\LabelField;
+use Wikibase\Elastic\Fields\LabelCountField;
 
 /**
- * @covers Wikibase\Elastic\Fields\LabelField
+ * @covers Wikibase\Elastic\Fields\LabelCountField
  *
  * @group WikibaseElastic
  *
  * @licence GNU GPL v2+
  * @author Katie Filbert < aude.wiki@gmail.com >
  */
-class LabelFieldTest extends PHPUnit_Framework_TestCase {
+class LabelCountFieldTest extends PHPUnit_Framework_TestCase {
 
 	public function testGetPropertyDefinition() {
-		$labelField = new LabelField( 'ja', array( 'all', 'all_near_match' ) );
+		$field = new LabelCountField();
 
-		$expected = array(
-			'type' => 'string',
-			'copy_to' => array( 'all', 'all_near_match' )
-		);
-
-		$this->assertSame( $expected, $labelField->getPropertyDefinition() );
+		$this->assertSame( [ 'type' => 'integer' ], $field->getPropertyDefinition() );
 	}
 
 	/**
 	 * @dataProvider doIndexProvider
 	 */
-	public function testDoIndex( $expected, $languageCode, $entity ) {
+	public function testDoIndex( $expected, $entity ) {
 		$document = new Document();
 
-		$labelField = new LabelField( $languageCode );
+		$labelField = new LabelCountField();
 		$labelField->doIndex( $entity, $document );
 
 		$this->assertSame( $expected, $document->getData() );
@@ -48,9 +43,8 @@ class LabelFieldTest extends PHPUnit_Framework_TestCase {
 		$emptyProperty = Property::newFromType( 'string' );
 
 		return array(
-			array( array( 'label_en' => 'kitten' ), 'en', $item ),
-			array( array(), 'es', $item ),
-			array( array(), 'en', $emptyProperty ),
+			array( [ 'label_count' => 1 ], $item ),
+			array( [ 'label_count' => 0 ], $emptyProperty ),
 		);
 	}
 
