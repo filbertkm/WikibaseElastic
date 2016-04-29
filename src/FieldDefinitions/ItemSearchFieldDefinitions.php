@@ -41,6 +41,8 @@ class ItemSearchFieldDefinitions implements FieldDefinitions {
 			$fields[$field->getFieldName()] = $field;
 		}
 
+		ksort( $fields );
+
 		return $fields;
 	}
 

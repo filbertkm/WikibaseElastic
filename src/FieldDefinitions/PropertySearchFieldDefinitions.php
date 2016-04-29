@@ -39,6 +39,8 @@ class PropertySearchFieldDefinitions implements FieldDefinitions {
 			$fields[$field->getFieldName()] = $field;
 		}
 
+		ksort( $fields );
+
 		return $fields;
 	}
 
