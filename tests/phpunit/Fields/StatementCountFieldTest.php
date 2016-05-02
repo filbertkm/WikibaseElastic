@@ -23,7 +23,10 @@ class StatementCountFieldTest extends PHPUnit_Framework_TestCase {
 	public function testGetPropertyDefinition() {
 		$field = new StatementCountField();
 
-		$this->assertSame( [ 'type' => 'long' ], $field->getPropertyDefinition() );
+		$this->assertSame(
+			[ 'type' => 'integer' ],
+			$field->getPropertyDefinition()
+		);
 	}
 
 	/**

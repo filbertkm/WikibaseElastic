@@ -15,7 +15,7 @@ class StatementCountField implements Field {
 	 */
 	public function getPropertyDefinition() {
 		return [
-			'type' => 'long'
+			'type' => 'integer'
 		];
 	}
 

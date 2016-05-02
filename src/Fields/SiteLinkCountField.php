@@ -15,7 +15,7 @@ class SiteLinkCountField implements Field {
 	 */
 	public function getPropertyDefinition() {
 		return [
-			'type' => 'long'
+			'type' => 'integer'
 		];
 	}
 

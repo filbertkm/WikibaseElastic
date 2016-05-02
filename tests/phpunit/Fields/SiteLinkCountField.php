@@ -21,7 +21,10 @@ class SiteLinkCountFieldTest extends PHPUnit_Framework_TestCase {
 	public function testGetPropertyDefinition() {
 		$field = new SiteLinkCountField();
 
-		$this->assertSame( [ 'type' => 'int' ], $field->getPropertyDefinition() );
+		$this->assertSame(
+			[ 'type' => 'integer' ],
+			$field->getPropertyDefinition()
+		);
 	}
 
 	/**

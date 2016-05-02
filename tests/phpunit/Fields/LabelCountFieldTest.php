@@ -21,7 +21,10 @@ class LabelCountFieldTest extends PHPUnit_Framework_TestCase {
 	public function testGetPropertyDefinition() {
 		$field = new LabelCountField();
 
-		$this->assertSame( [ 'type' => 'integer' ], $field->getPropertyDefinition() );
+		$this->assertSame(
+			[ 'type' => 'integer' ],
+			$field->getPropertyDefinition()
+		);
 	}
 
 	/**
