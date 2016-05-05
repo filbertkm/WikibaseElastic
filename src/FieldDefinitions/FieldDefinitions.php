@@ -2,13 +2,11 @@
 
 namespace Wikibase\Elastic\FieldDefinitions;
 
-use Wikibase\Elastic\Fields\Field;
-
 interface FieldDefinitions {
 
 	/**
-	 * @return Field[]
+	 * @return array
 	 */
-	public function getFields();
+	public function getMappingProperties();
 
 }
